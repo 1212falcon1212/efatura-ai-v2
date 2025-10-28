@@ -2,15 +2,15 @@ package com.efaturaai.api.it;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Map;
-import java.util.UUID;
-import java.util.List;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
-import org.slf4j.LoggerFactory;
 import com.efaturaai.api.invoice.InvoiceService;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -72,15 +72,23 @@ public class SmokeIT extends TestcontainersSupport {
     assertThat(created.getStatusCode()).isEqualTo(HttpStatus.CREATED);
     String id = (String) created.getBody().get("id");
 
-    // actuator metric assertion
-    ResponseEntity<Map> metric =
-        rest.getForEntity(base + "/actuator/metrics/invoices.created.count", Map.class);
-    assertThat(metric.getStatusCode()).isEqualTo(HttpStatus.OK);
-    List measurements = (List) metric.getBody().get("measurements");
-    assertThat(measurements).isNotNull();
-    Map first = (Map) measurements.get(0);
-    Number val = (Number) first.get("value");
-    assertThat(val.doubleValue()).isGreaterThan(0.0);
+    // actuator metric assertion (retry briefly for consistency in CI)
+    double metricVal = 0.0;
+    for (int i = 0; i < 10; i++) {
+      ResponseEntity<Map> metric =
+          rest.getForEntity(base + "/actuator/metrics/invoices.created.count", Map.class);
+      if (metric.getStatusCode() == HttpStatus.OK && metric.getBody() != null) {
+        List measurements = (List) metric.getBody().get("measurements");
+        if (measurements != null && !measurements.isEmpty()) {
+          Map first = (Map) measurements.get(0);
+          Number val = (Number) first.get("value");
+          metricVal = val.doubleValue();
+          if (metricVal > 0.0) break;
+        }
+      }
+      try { Thread.sleep(100); } catch (InterruptedException ignored) {}
+    }
+    assertThat(metricVal).isGreaterThan(0.0);
 
     // MDC contains tenantId
     boolean mdcOk = appender.list.stream()

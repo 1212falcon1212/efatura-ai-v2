@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { api } from '@/lib/api'
+import { api } from '../lib/api'
 
 describe('axios 401 interceptor', () => {
   beforeEach(() => {
