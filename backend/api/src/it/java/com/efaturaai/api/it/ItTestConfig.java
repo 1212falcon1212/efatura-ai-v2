@@ -19,6 +19,9 @@ public class ItTestConfig {
     return new EInvoiceProviderPort() {
       @Override
       public ProviderSendResponse sendInvoice(String ublXml) {
+        if ("true".equals(System.getProperty("it.provider.fail"))) {
+          throw new RuntimeException("provider down");
+        }
         ProviderSendResponse r = new ProviderSendResponse();
         r.setInvoiceUuid("it-stub-uuid");
         r.setStatus("SENT");

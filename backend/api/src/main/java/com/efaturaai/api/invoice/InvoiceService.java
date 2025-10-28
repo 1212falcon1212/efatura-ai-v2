@@ -95,21 +95,37 @@ public class InvoiceService {
   public Invoice send(UUID id) {
     Invoice inv = invoiceRepository.findById(id).orElseThrow();
     String xml = "<Invoice id='" + inv.getId() + "'/>";
-    providerClient.sendInvoice(xml);
-    inv.setStatus(InvoiceStatus.SENT);
-    OutboxMessage msg = new OutboxMessage();
-    msg.setId(UUID.randomUUID());
-    msg.setTenantId(inv.getTenantId());
-    msg.setAggregateType("Invoice");
-    msg.setAggregateId(inv.getId().toString());
-    msg.setEventType("InvoiceSent");
-    msg.setPayload("{\"invoiceId\":\"" + inv.getId() + "\"}");
-    msg.setStatus(OutboxStatus.NEW);
-    msg.setRetryCount(0);
-    msg.setCreatedAt(OffsetDateTime.now());
-    outboxRepository.save(msg);
-    outboxPublisher.publish(msg);
-    return inv;
+    try {
+      providerClient.sendInvoice(xml);
+      inv.setStatus(InvoiceStatus.SENT);
+      OutboxMessage msg = new OutboxMessage();
+      msg.setId(UUID.randomUUID());
+      msg.setTenantId(inv.getTenantId());
+      msg.setAggregateType("Invoice");
+      msg.setAggregateId(inv.getId().toString());
+      msg.setEventType("InvoiceSent");
+      msg.setPayload("{\"invoiceId\":\"" + inv.getId() + "\"}");
+      msg.setStatus(OutboxStatus.NEW);
+      msg.setRetryCount(0);
+      msg.setCreatedAt(OffsetDateTime.now());
+      outboxRepository.save(msg);
+      outboxPublisher.publish(msg);
+      return inv;
+    } catch (RuntimeException ex) {
+      // Provider başarısız: retry için outbox kaydı oluştur, publish etme ve 500 döndür
+      OutboxMessage msg = new OutboxMessage();
+      msg.setId(UUID.randomUUID());
+      msg.setTenantId(inv.getTenantId());
+      msg.setAggregateType("Invoice");
+      msg.setAggregateId(inv.getId().toString());
+      msg.setEventType("InvoiceSendFailed");
+      msg.setPayload("{\"invoiceId\":\"" + inv.getId() + "\"}");
+      msg.setStatus(OutboxStatus.NEW);
+      msg.setRetryCount(0);
+      msg.setCreatedAt(OffsetDateTime.now());
+      outboxRepository.save(msg);
+      throw ex;
+    }
   }
 
   @Transactional(readOnly = true)

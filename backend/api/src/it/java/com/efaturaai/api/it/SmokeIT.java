@@ -81,4 +81,46 @@ public class SmokeIT extends TestcontainersSupport {
     assertThat(pdf.getStatusCode()).isEqualTo(HttpStatus.OK);
     assertThat(pdf.getHeaders().getContentType()).isEqualTo(MediaType.APPLICATION_PDF);
   }
+
+  @Test
+  void provider_failure_creates_outbox_and_returns_500() {
+    String base = "http://localhost:" + port;
+    UUID tenant = UUID.fromString("00000000-0000-0000-0000-000000000001");
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_JSON);
+    headers.add("X-Tenant", tenant.toString());
+    ResponseEntity<Map> login =
+        rest.postForEntity(
+            base + "/auth/login",
+            new HttpEntity<>(
+                Map.of(
+                    "username", "demo",
+                    "password", "demo",
+                    "tenant", tenant.toString()),
+                headers),
+            Map.class);
+    String token = (String) login.getBody().get("accessToken");
+
+    HttpHeaders auth = new HttpHeaders();
+    auth.setBearerAuth(token);
+    auth.add("X-Tenant", tenant.toString());
+    ResponseEntity<Map> created =
+        rest.exchange(
+            base + "/invoices",
+            HttpMethod.POST,
+            new HttpEntity<>(Map.of("customerName", "Acme", "totalGross", 118), auth),
+            Map.class);
+    String id = (String) created.getBody().get("id");
+
+    // Switch provider bean to failing one via header (simulated by profile already)
+    System.setProperty("it.provider.fail", "true");
+    ResponseEntity<String> fail =
+        rest.exchange(
+            base + "/invoices/" + id + "/send",
+            HttpMethod.POST,
+            new HttpEntity<>(auth),
+            String.class);
+    assertThat(fail.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+    System.setProperty("it.provider.fail", "false");
+  }
 }
