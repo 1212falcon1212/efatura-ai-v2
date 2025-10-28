@@ -8,6 +8,7 @@ import java.util.UUID;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
+import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +33,10 @@ public class AuditAspect {
     log.setEntityId(audit.entityId());
     log.setAction(audit.action());
     log.setCreatedAt(OffsetDateTime.now());
+    String apiKeyId = MDC.get("apiKeyId");
+    if (apiKeyId != null) {
+      log.setMetadata("{\"apiKeyId\":\"" + apiKeyId + "\"}");
+    }
     repository.save(log);
   }
 }

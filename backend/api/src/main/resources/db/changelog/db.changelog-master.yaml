@@ -5,5 +5,7 @@ databaseChangeLog:
       file: db/changelog/002-seed-it.yaml
   - include:
       file: db/changelog/003-outbox-processed.yaml
+  - include:
+      file: db/changelog/004-api-keys.yaml
 
 

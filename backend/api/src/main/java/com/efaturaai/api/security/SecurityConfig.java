@@ -39,6 +39,7 @@ public class SecurityConfig {
   public SecurityFilterChain filterChain(
       HttpSecurity http,
       TenantExtractionFilter tenantExtractionFilter,
+      ApiKeyFilter apiKeyFilter,
       @Value("${security.permitAll:false}") boolean permitAll)
       throws Exception {
     http.csrf(csrf -> csrf.disable())
@@ -57,6 +58,7 @@ public class SecurityConfig {
               }
             })
         .httpBasic(Customizer.withDefaults())
+        .addFilterBefore(apiKeyFilter, UsernamePasswordAuthenticationFilter.class)
         .addFilterBefore(tenantExtractionFilter, UsernamePasswordAuthenticationFilter.class);
     return http.build();
   }
