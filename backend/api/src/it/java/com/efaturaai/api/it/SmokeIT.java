@@ -4,6 +4,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Map;
 import java.util.UUID;
+import java.util.List;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
+import org.slf4j.LoggerFactory;
+import com.efaturaai.api.invoice.InvoiceService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -47,6 +53,12 @@ public class SmokeIT extends TestcontainersSupport {
     assertThat(login.getStatusCode()).isEqualTo(HttpStatus.OK);
     String token = (String) login.getBody().get("accessToken");
 
+    // create invoice (capture logs for MDC assertion)
+    Logger serviceLogger = (Logger) LoggerFactory.getLogger(InvoiceService.class);
+    ListAppender<ILoggingEvent> appender = new ListAppender<>();
+    appender.start();
+    serviceLogger.addAppender(appender);
+
     // create invoice
     HttpHeaders auth = new HttpHeaders();
     auth.setBearerAuth(token);
@@ -59,6 +71,21 @@ public class SmokeIT extends TestcontainersSupport {
             Map.class);
     assertThat(created.getStatusCode()).isEqualTo(HttpStatus.CREATED);
     String id = (String) created.getBody().get("id");
+
+    // actuator metric assertion
+    ResponseEntity<Map> metric =
+        rest.getForEntity(base + "/actuator/metrics/invoices.created.count", Map.class);
+    assertThat(metric.getStatusCode()).isEqualTo(HttpStatus.OK);
+    List measurements = (List) metric.getBody().get("measurements");
+    assertThat(measurements).isNotNull();
+    Map first = (Map) measurements.get(0);
+    Number val = (Number) first.get("value");
+    assertThat(val.doubleValue()).isGreaterThan(0.0);
+
+    // MDC contains tenantId
+    boolean mdcOk = appender.list.stream()
+        .anyMatch(ev -> tenant.toString().equals(ev.getMDCPropertyMap().get("tenantId")));
+    assertThat(mdcOk).isTrue();
 
     // sign
     ResponseEntity<Map> signed =
