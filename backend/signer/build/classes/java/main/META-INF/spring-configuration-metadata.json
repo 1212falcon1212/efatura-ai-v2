@@ -1,0 +1,27 @@
+{
+  "groups": [
+    {
+      "name": "signer.pkcs11",
+      "type": "com.efaturaai.signer.SignerProperties",
+      "sourceType": "com.efaturaai.signer.SignerProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "signer.pkcs11.library-path",
+      "type": "java.lang.String",
+      "sourceType": "com.efaturaai.signer.SignerProperties"
+    },
+    {
+      "name": "signer.pkcs11.pin",
+      "type": "java.lang.String",
+      "sourceType": "com.efaturaai.signer.SignerProperties"
+    },
+    {
+      "name": "signer.pkcs11.slot",
+      "type": "java.lang.String",
+      "sourceType": "com.efaturaai.signer.SignerProperties"
+    }
+  ],
+  "hints": []
+}

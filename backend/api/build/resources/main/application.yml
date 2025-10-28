@@ -1,0 +1,48 @@
+spring:
+  application:
+    name: efatura-api
+  datasource:
+    url: jdbc:postgresql://localhost:5432/efatura
+    username: efatura
+    password: efatura
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: false
+        session_factory:
+          statement_inspector: com.efaturaai.core.jpa.TenantStatementInspector
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,loggers,threaddump,env
+
+logging:
+  level:
+    root: INFO
+    org.springframework.security: INFO
+    org.hibernate.SQL: INFO
+
+provider:
+  soap:
+    endpoint: http://localhost:18080/ws
+
+signer:
+  pkcs11:
+    libraryPath: /opt/pkcs11/lib.so
+    slot: 0
+    pin: 0000
+
+messaging:
+  outbox:
+    exchange: outbox.exchange
+    queue: outbox.queue
+    routing: outbox.routing
+
+

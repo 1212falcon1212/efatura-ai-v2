@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.efaturaai.ubl.UblTests" tests="1" skipped="0" failures="0" errors="0" timestamp="2025-10-28T11:58:26" hostname="Sahin-MacBook-Pro.local" time="0.418">
+  <properties/>
+  <testcase name="build_and_validate_invoice()" classname="com.efaturaai.ubl.UblTests" time="0.418"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

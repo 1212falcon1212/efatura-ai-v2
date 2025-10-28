@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.efaturaai.api.it.SmokeIT" tests="1" skipped="0" failures="0" errors="0" timestamp="2025-10-28T11:58:19" hostname="Sahin-MacBook-Pro.local" time="2.319">
+  <properties/>
+  <testcase name="end_to_end_flow()" classname="com.efaturaai.api.it.SmokeIT" time="2.319"/>
+  <system-out><![CDATA[14:57:47.577 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.efaturaai.api.Application for test class com.efaturaai.api.it.SmokeIT
+14:57:47.801 [Test worker] INFO org.testcontainers.images.PullPolicy -- Image pull policy will be performed by: DefaultPullPolicy()
+14:57:47.806 [Test worker] INFO org.testcontainers.utility.ImageNameSubstitutor -- Image name substitution will be performed by: DefaultImageNameSubstitutor (composite of 'ConfigurationFileImageNameSubstitutor' and 'PrefixingImageNameSubstitutor')
+14:57:48.171 [Test worker] INFO org.testcontainers.dockerclient.DockerClientProviderStrategy -- Loaded org.testcontainers.dockerclient.UnixSocketClientProviderStrategy from ~/.testcontainers.properties, will try it first
+14:57:48.523 [Test worker] INFO org.testcontainers.dockerclient.DockerClientProviderStrategy -- Found Docker environment with local Unix socket (unix:///var/run/docker.sock)
+14:57:48.524 [Test worker] INFO org.testcontainers.DockerClientFactory -- Docker host IP address is localhost
+14:57:48.547 [Test worker] INFO org.testcontainers.DockerClientFactory -- Connected to docker: 
+  Server Version: 28.3.2
+  API Version: 1.51
+  Operating System: Docker Desktop
+  Total Memory: 7838 MB
+14:57:48.727 [Test worker] INFO tc.testcontainers/ryuk:0.7.0 -- Creating container for image: testcontainers/ryuk:0.7.0
+14:57:48.913 [Test worker] INFO org.testcontainers.utility.RegistryAuthLocator -- Credential helper/store (docker-credential-desktop) does not have credentials for https://index.docker.io/v1/
+14:57:49.093 [Test worker] INFO tc.testcontainers/ryuk:0.7.0 -- Container testcontainers/ryuk:0.7.0 is starting: 80e6b5c44726f85af45ef565aba2ed8ef6937fcbb83296a73978b6ce497ffc50
+14:57:49.537 [Test worker] INFO tc.testcontainers/ryuk:0.7.0 -- Container testcontainers/ryuk:0.7.0 started in PT0.81032S
+14:57:49.544 [Test worker] INFO org.testcontainers.utility.RyukResourceReaper -- Ryuk started - will monitor and terminate Testcontainers containers on JVM exit
+14:57:49.545 [Test worker] INFO org.testcontainers.DockerClientFactory -- Checking the system...
+14:57:49.546 [Test worker] INFO org.testcontainers.DockerClientFactory -- ✔︎ Docker server version should be at least 1.6.0
+14:57:49.546 [Test worker] INFO tc.postgres:16-alpine -- Creating container for image: postgres:16-alpine
+14:57:49.654 [Test worker] INFO tc.postgres:16-alpine -- Container postgres:16-alpine is starting: 1192c3ff5e6f23979d06ae83b6b066343068ff57d5fe71b011723e3301f15724
+14:57:51.297 [Test worker] INFO tc.postgres:16-alpine -- Container postgres:16-alpine started in PT1.750859S
+14:57:51.298 [Test worker] INFO tc.postgres:16-alpine -- Container is started (JDBC URL: jdbc:postgresql://localhost:58080/efatura?loggerLevel=OFF)
+14:57:51.298 [Test worker] INFO tc.rabbitmq:3.13-management -- Creating container for image: rabbitmq:3.13-management
+14:57:51.392 [Test worker] INFO tc.rabbitmq:3.13-management -- Container rabbitmq:3.13-management is starting: 0d4313b4410c18d79b6a10c371702da242e66ad3cd461d52af7ba189e162fb91
+14:58:06.394 [Test worker] INFO tc.rabbitmq:3.13-management -- Container rabbitmq:3.13-management started in PT15.095383S
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.4)
+
+{"@timestamp":"2025-10-28T11:58:07.197677Z","level":"INFO","logger":"org.hibernate.validator.internal.util.Version","thread":"background-preinit","message":"HV000001: Hibernate Validator 8.0.1.Final","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:07.262979Z","level":"INFO","logger":"com.efaturaai.api.it.SmokeIT","thread":"Test worker","message":"Starting SmokeIT using Java 21.0.8 with PID 2985 (started by sahinyildiz in /Users/sahinyildiz/Desktop/Siteler/efatura-ai-v2/backend/api)","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:07.263864Z","level":"INFO","logger":"com.efaturaai.api.it.SmokeIT","thread":"Test worker","message":"The following 1 profile is active: \"it\"","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:07.957903Z","level":"INFO","logger":"org.springframework.data.repository.config.RepositoryConfigurationDelegate","thread":"Test worker","message":"Bootstrapping Spring Data JPA repositories in DEFAULT mode.","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:08.133836Z","level":"INFO","logger":"org.springframework.data.repository.config.RepositoryConfigurationDelegate","thread":"Test worker","message":"Finished Spring Data repository scanning in 163 ms. Found 5 JPA repository interfaces.","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:09.015735Z","level":"WARN","logger":"org.springframework.context.support.PostProcessorRegistrationDelegate$BeanPostProcessorChecker","thread":"Test worker","message":"Bean 'org.springframework.ws.config.annotation.DelegatingWsConfiguration' of type [org.springframework.ws.config.annotation.DelegatingWsConfiguration$$SpringCGLIB$$0] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying). The currently created BeanPostProcessor [annotationActionEndpointMapping] is declared through a non-static factory method on that class; consider declaring it as static instead.","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:09.04157Z","level":"INFO","logger":"org.springframework.ws.soap.addressing.server.AnnotationActionEndpointMapping","thread":"Test worker","message":"Supporting [WS-Addressing August 2004, WS-Addressing 1.0]","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:09.895448Z","level":"INFO","logger":"org.springframework.boot.web.embedded.tomcat.TomcatWebServer","thread":"Test worker","message":"Tomcat initialized with port 0 (http)","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:09.912353Z","level":"INFO","logger":"org.apache.coyote.http11.Http11NioProtocol","thread":"Test worker","message":"Initializing ProtocolHandler [\"http-nio-auto-1\"]","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:09.91711Z","level":"INFO","logger":"org.apache.catalina.core.StandardService","thread":"Test worker","message":"Starting service [Tomcat]","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:09.917489Z","level":"INFO","logger":"org.apache.catalina.core.StandardEngine","thread":"Test worker","message":"Starting Servlet engine: [Apache Tomcat/10.1.30]","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:10.006664Z","level":"INFO","logger":"org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/]","thread":"Test worker","message":"Initializing Spring embedded WebApplicationContext","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:10.007842Z","level":"INFO","logger":"org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext","thread":"Test worker","message":"Root WebApplicationContext: initialization completed in 2707 ms","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:10.596921Z","level":"INFO","logger":"com.zaxxer.hikari.HikariDataSource","thread":"Test worker","message":"HikariPool-1 - Starting...","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:10.848934Z","level":"INFO","logger":"com.zaxxer.hikari.pool.HikariPool","thread":"Test worker","message":"HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@e6b2e9d","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:10.851108Z","level":"INFO","logger":"com.zaxxer.hikari.HikariDataSource","thread":"Test worker","message":"HikariPool-1 - Start completed.","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:11.06716Z","level":"INFO","logger":"liquibase.database","thread":"Test worker","message":"Set default schema name to public","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:11.527663Z","level":"INFO","logger":"liquibase.changelog","thread":"Test worker","message":"Creating database history table with name: public.databasechangelog","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:11.591522Z","level":"INFO","logger":"liquibase.changelog","thread":"Test worker","message":"Reading from public.databasechangelog","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:11.826987Z","level":"INFO","logger":"liquibase.lockservice","thread":"Test worker","message":"Successfully acquired change log lock","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:11.829073Z","level":"INFO","logger":"liquibase.command","thread":"Test worker","message":"Using deploymentId: 1652691828","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:11.833102Z","level":"INFO","logger":"liquibase.changelog","thread":"Test worker","message":"Reading from public.databasechangelog","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:11.908332Z","level":"INFO","logger":"liquibase.ui","thread":"Test worker","message":"Running Changeset: db/changelog/001-init-schema.yaml::001-create-core-tables::efaturaai","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:11.922329Z","level":"INFO","logger":"liquibase.changelog","thread":"Test worker","message":"Table tenants created","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:11.928488Z","level":"INFO","logger":"liquibase.changelog","thread":"Test worker","message":"Table roles created","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:11.935409Z","level":"INFO","logger":"liquibase.changelog","thread":"Test worker","message":"Foreign key constraint added to roles (tenant_id)","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:11.939821Z","level":"INFO","logger":"liquibase.changelog","thread":"Test worker","message":"Unique constraint added to roles(tenant_id, name)","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:11.949339Z","level":"INFO","logger":"liquibase.changelog","thread":"Test worker","message":"Table permissions created","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:11.95378Z","level":"INFO","logger":"liquibase.changelog","thread":"Test worker","message":"Foreign key constraint added to permissions (tenant_id)","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:11.957222Z","level":"INFO","logger":"liquibase.changelog","thread":"Test worker","message":"Unique constraint added to permissions(tenant_id, code)","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:11.964392Z","level":"INFO","logger":"liquibase.changelog","thread":"Test worker","message":"Table users created","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:11.968272Z","level":"INFO","logger":"liquibase.changelog","thread":"Test worker","message":"Foreign key constraint added to users (tenant_id)","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:11.971602Z","level":"INFO","logger":"liquibase.changelog","thread":"Test worker","message":"Unique constraint added to users(tenant_id, username)","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:11.976394Z","level":"INFO","logger":"liquibase.changelog","thread":"Test worker","message":"Table user_roles created","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:11.980863Z","level":"INFO","logger":"liquibase.changelog","thread":"Test worker","message":"Primary key added to user_roles (user_id, role_id)","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:11.985745Z","level":"INFO","logger":"liquibase.changelog","thread":"Test worker","message":"Foreign key constraint added to user_roles (user_id)","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:11.990256Z","level":"INFO","logger":"liquibase.changelog","thread":"Test worker","message":"Foreign key constraint added to user_roles (role_id)","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:11.994731Z","level":"INFO","logger":"liquibase.changelog","thread":"Test worker","message":"Table role_permissions created","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:11.999746Z","level":"INFO","logger":"liquibase.changelog","thread":"Test worker","message":"Primary key added to role_permissions (role_id, permission_id)","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:12.004651Z","level":"INFO","logger":"liquibase.changelog","thread":"Test worker","message":"Foreign key constraint added to role_permissions (role_id)","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:12.008573Z","level":"INFO","logger":"liquibase.changelog","thread":"Test worker","message":"Foreign key constraint added to role_permissions (permission_id)","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:12.015756Z","level":"INFO","logger":"liquibase.changelog","thread":"Test worker","message":"Table customers created","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:12.019957Z","level":"INFO","logger":"liquibase.changelog","thread":"Test worker","message":"Foreign key constraint added to customers (tenant_id)","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:12.023096Z","level":"INFO","logger":"liquibase.changelog","thread":"Test worker","message":"Unique constraint added to customers(tenant_id, tax_number)","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:12.028607Z","level":"INFO","logger":"liquibase.changelog","thread":"Test worker","message":"Table items created","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:12.032888Z","level":"INFO","logger":"liquibase.changelog","thread":"Test worker","message":"Foreign key constraint added to items (tenant_id)","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:12.035866Z","level":"INFO","logger":"liquibase.changelog","thread":"Test worker","message":"Unique constraint added to items(tenant_id, sku)","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:12.044488Z","level":"INFO","logger":"liquibase.changelog","thread":"Test worker","message":"Table invoices created","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:12.050317Z","level":"INFO","logger":"liquibase.changelog","thread":"Test worker","message":"Foreign key constraint added to invoices (tenant_id)","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:12.05447Z","level":"INFO","logger":"liquibase.changelog","thread":"Test worker","message":"Foreign key constraint added to invoices (customer_id)","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:12.058098Z","level":"INFO","logger":"liquibase.changelog","thread":"Test worker","message":"Unique constraint added to invoices(tenant_id, invoice_no)","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:12.064931Z","level":"INFO","logger":"liquibase.changelog","thread":"Test worker","message":"Table invoice_lines created","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:12.068881Z","level":"INFO","logger":"liquibase.changelog","thread":"Test worker","message":"Foreign key constraint added to invoice_lines (tenant_id)","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:12.073003Z","level":"INFO","logger":"liquibase.changelog","thread":"Test worker","message":"Foreign key constraint added to invoice_lines (invoice_id)","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:12.07672Z","level":"INFO","logger":"liquibase.changelog","thread":"Test worker","message":"Foreign key constraint added to invoice_lines (item_id)","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:12.084576Z","level":"INFO","logger":"liquibase.changelog","thread":"Test worker","message":"Table outbox created","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:12.089017Z","level":"INFO","logger":"liquibase.changelog","thread":"Test worker","message":"Foreign key constraint added to outbox (tenant_id)","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:12.099055Z","level":"INFO","logger":"liquibase.changelog","thread":"Test worker","message":"Table audit_logs created","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:12.103301Z","level":"INFO","logger":"liquibase.changelog","thread":"Test worker","message":"Foreign key constraint added to audit_logs (tenant_id)","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:12.106926Z","level":"INFO","logger":"liquibase.changelog","thread":"Test worker","message":"Index idx_audit_logs_entity created","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:12.10822Z","level":"INFO","logger":"liquibase.changelog","thread":"Test worker","message":"ChangeSet db/changelog/001-init-schema.yaml::001-create-core-tables::efaturaai ran successfully in 199ms","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:12.117574Z","level":"INFO","logger":"liquibase.ui","thread":"Test worker","message":"Running Changeset: db/changelog/002-seed-it.yaml::002-seed-it::efaturaai","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:12.159517Z","level":"INFO","logger":"liquibase.changelog","thread":"Test worker","message":"Custom SQL executed","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:12.160562Z","level":"INFO","logger":"liquibase.changelog","thread":"Test worker","message":"ChangeSet db/changelog/002-seed-it.yaml::002-seed-it::efaturaai ran successfully in 42ms","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:12.164871Z","level":"INFO","logger":"liquibase.ui","thread":"Test worker","message":"Running Changeset: db/changelog/003-outbox-processed.yaml::003-outbox-processed::efaturaai","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:12.169953Z","level":"INFO","logger":"liquibase.changelog","thread":"Test worker","message":"Columns processed(BOOLEAN) added to outbox","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:12.170992Z","level":"INFO","logger":"liquibase.changelog","thread":"Test worker","message":"ChangeSet db/changelog/003-outbox-processed.yaml::003-outbox-processed::efaturaai ran successfully in 5ms","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:12.179798Z","level":"INFO","logger":"liquibase.util","thread":"Test worker","message":"UPDATE SUMMARY","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:12.180005Z","level":"INFO","logger":"liquibase.util","thread":"Test worker","message":"Run:                          3","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:12.180146Z","level":"INFO","logger":"liquibase.util","thread":"Test worker","message":"Previously run:               0","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:12.180293Z","level":"INFO","logger":"liquibase.util","thread":"Test worker","message":"Filtered out:                 0","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:12.180499Z","level":"INFO","logger":"liquibase.util","thread":"Test worker","message":"-------------------------------","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:12.180629Z","level":"INFO","logger":"liquibase.util","thread":"Test worker","message":"Total change sets:            3","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:12.181884Z","level":"INFO","logger":"liquibase.util","thread":"Test worker","message":"Update summary generated","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:12.185446Z","level":"INFO","logger":"liquibase.command","thread":"Test worker","message":"Update command completed successfully.","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:12.185761Z","level":"INFO","logger":"liquibase.ui","thread":"Test worker","message":"Liquibase: Update has been successful. Rows affected: 9","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:12.190559Z","level":"INFO","logger":"liquibase.lockservice","thread":"Test worker","message":"Successfully released change log lock","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:12.193195Z","level":"INFO","logger":"liquibase.command","thread":"Test worker","message":"Command execution complete","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:12.39186Z","level":"INFO","logger":"org.hibernate.jpa.internal.util.LogHelper","thread":"Test worker","message":"HHH000204: Processing PersistenceUnitInfo [name: default]","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:12.490859Z","level":"INFO","logger":"org.hibernate.Version","thread":"Test worker","message":"HHH000412: Hibernate ORM core version 6.5.3.Final","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:12.556593Z","level":"INFO","logger":"org.hibernate.cache.internal.RegionFactoryInitiator","thread":"Test worker","message":"HHH000026: Second-level cache disabled","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:13.115955Z","level":"INFO","logger":"org.springframework.orm.jpa.persistenceunit.SpringPersistenceUnitInfo","thread":"Test worker","message":"No LoadTimeWeaver setup: ignoring JPA class transformer","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:14.848877Z","level":"INFO","logger":"org.hibernate.engine.transaction.jta.platform.internal.JtaPlatformInitiator","thread":"Test worker","message":"HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:14.852536Z","level":"INFO","logger":"org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean","thread":"Test worker","message":"Initialized JPA EntityManagerFactory for persistence unit 'default'","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:15.585893Z","level":"INFO","logger":"org.springframework.data.jpa.repository.query.QueryEnhancerFactory","thread":"Test worker","message":"Hibernate is in classpath; If applicable, HQL parser will be used.","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:16.442747Z","level":"INFO","logger":"org.springframework.ws.soap.saaj.SaajSoapMessageFactory","thread":"Test worker","message":"Creating SAAJ 1.3 MessageFactory with SOAP 1.1 Protocol","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:16.462129Z","level":"INFO","logger":"org.springframework.ws.soap.saaj.SaajSoapMessageFactory","thread":"Test worker","message":"Creating SAAJ 1.3 MessageFactory with SOAP 1.1 Protocol","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:16.763314Z","level":"WARN","logger":"org.springframework.boot.autoconfigure.orm.jpa.JpaBaseConfiguration$JpaWebConfiguration","thread":"Test worker","message":"spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:16.834681Z","level":"INFO","logger":"org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer","thread":"Test worker","message":"Global AuthenticationManager configured with UserDetailsService bean with name userDetailsServiceImpl","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:18.098635Z","level":"INFO","logger":"org.springframework.boot.actuate.endpoint.web.EndpointLinksResolver","thread":"Test worker","message":"Exposing 6 endpoints beneath base path '/actuator'","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:18.710072Z","level":"INFO","logger":"org.apache.coyote.http11.Http11NioProtocol","thread":"Test worker","message":"Starting ProtocolHandler [\"http-nio-auto-1\"]","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:18.727982Z","level":"INFO","logger":"org.springframework.boot.web.embedded.tomcat.TomcatWebServer","thread":"Test worker","message":"Tomcat started on port 58098 (http) with context path '/'","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:18.732451Z","level":"INFO","logger":"org.springframework.amqp.rabbit.connection.CachingConnectionFactory","thread":"Test worker","message":"Attempting to connect to: [localhost:58084]","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:18.821186Z","level":"INFO","logger":"org.springframework.amqp.rabbit.connection.CachingConnectionFactory","thread":"Test worker","message":"Created new connection: rabbitConnectionFactory#1256157f:0/SimpleConnection@4034b7c1 [delegate=amqp://guest@127.0.0.1:58084/, localPort=58099]","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:18.941001Z","level":"INFO","logger":"com.efaturaai.api.it.SmokeIT","thread":"Test worker","message":"Started SmokeIT in 12.507 seconds (process running for 32.897)","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:20.28101Z","level":"INFO","logger":"org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/]","thread":"http-nio-auto-1-exec-1","message":"Initializing Spring DispatcherServlet 'dispatcherServlet'","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:20.281507Z","level":"INFO","logger":"org.springframework.web.servlet.DispatcherServlet","thread":"http-nio-auto-1-exec-1","message":"Initializing Servlet 'dispatcherServlet'","tenantId":""}
+{"@timestamp":"2025-10-28T11:58:20.283332Z","level":"INFO","logger":"org.springframework.web.servlet.DispatcherServlet","thread":"http-nio-auto-1-exec-1","message":"Completed initialization in 2 ms","tenantId":""}
+]]></system-out>
+  <system-err><![CDATA[WARNING: A Java agent has been loaded dynamically (/Users/sahinyildiz/.gradle/caches/modules-2/files-2.1/net.bytebuddy/byte-buddy-agent/1.14.19/154da3a65b4f4a909d3e5bdec55d1b2b4cbb6ce1/byte-buddy-agent-1.14.19.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+]]></system-err>
+</testsuite>

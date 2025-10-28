@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="tr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MockSignerService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">signer</a> &gt; <a href="index.source.html" class="el_package">com.efaturaai.signer</a> &gt; <span class="el_source">MockSignerService.java</span></div><h1>MockSignerService.java</h1><pre class="source lang-java linenums">package com.efaturaai.signer;
+
+import java.nio.charset.StandardCharsets;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Service;
+
+@Service
+@Profile({&quot;default&quot;, &quot;test&quot;, &quot;it&quot;})
+<span class="fc" id="L9">public class MockSignerService implements SignerService {</span>
+  @Override
+  public byte[] signXadesBes(byte[] xml) {
+    // Simple mock: wrap with &lt;Signed&gt; for tests
+<span class="fc" id="L13">    String content = new String(xml, StandardCharsets.UTF_8);</span>
+<span class="fc" id="L14">    return (&quot;&lt;Signed&gt;&quot; + content + &quot;&lt;/Signed&gt;&quot;).getBytes(StandardCharsets.UTF_8);</span>
+  }
+
+  @Override
+  public boolean verifyXadesBes(byte[] signedXml) {
+<span class="fc" id="L19">    String s = new String(signedXml, StandardCharsets.UTF_8);</span>
+<span class="pc bpc" id="L20" title="2 of 4 branches missed.">    return s.startsWith(&quot;&lt;Signed&gt;&quot;) &amp;&amp; s.endsWith(&quot;&lt;/Signed&gt;&quot;);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,22 @@
+databaseChangeLog:
+  - changeSet:
+      id: 002-seed-it
+      author: efaturaai
+      context: it
+      changes:
+        - sql:
+            sql: |
+              -- seed tenant, role, permission, user
+              INSERT INTO tenants (id, code, name, created_at) VALUES ('00000000-0000-0000-0000-000000000001','demo','Demo','now()')
+              ON CONFLICT DO NOTHING;
+              INSERT INTO roles (id, tenant_id, name, created_at) VALUES ('00000000-0000-0000-0000-000000000011','00000000-0000-0000-0000-000000000001','ADMIN','now()')
+              ON CONFLICT DO NOTHING;
+              INSERT INTO permissions (id, tenant_id, code, description, created_at) VALUES ('00000000-0000-0000-0000-000000000021','00000000-0000-0000-0000-000000000001','INVOICE_CREATE','Create invoice','now()')
+              ON CONFLICT DO NOTHING;
+              INSERT INTO role_permissions (role_id, permission_id) VALUES ('00000000-0000-0000-0000-000000000011','00000000-0000-0000-0000-000000000021') ON CONFLICT DO NOTHING;
+              INSERT INTO users (id, tenant_id, username, email, password_hash, enabled, created_at) VALUES (
+                '00000000-0000-0000-0000-000000000031','00000000-0000-0000-0000-000000000001','demo','demo@example.com','$2a$10$9bCq8oEwsGx5YcQyY2QFxei8y0l9wSfaCz1ZC5S7G1h6xGg2mV4vK',true,'now()')
+              ON CONFLICT DO NOTHING;
+              INSERT INTO user_roles (user_id, role_id) VALUES ('00000000-0000-0000-0000-000000000031','00000000-0000-0000-0000-000000000011') ON CONFLICT DO NOTHING;
+
+

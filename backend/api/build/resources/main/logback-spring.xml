@@ -1,0 +1,25 @@
+<configuration>
+  <appender name="JSON" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+      <providers>
+        <timestamp>
+          <timeZone>UTC</timeZone>
+        </timestamp>
+        <pattern>
+          <pattern>
+            {"level":"%level","logger":"%logger","thread":"%thread","message":"%message","tenantId":"%X{tenantId}"}
+          </pattern>
+        </pattern>
+        <stackTrace>
+          <fieldName>stacktrace</fieldName>
+        </stackTrace>
+      </providers>
+    </encoder>
+  </appender>
+
+  <root level="INFO">
+    <appender-ref ref="JSON" />
+  </root>
+</configuration>
+
+

@@ -1,0 +1,15 @@
+databaseChangeLog:
+  - changeSet:
+      id: 003-outbox-processed
+      author: efaturaai
+      changes:
+        - addColumn:
+            tableName: outbox
+            columns:
+              - column:
+                  name: processed
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+
