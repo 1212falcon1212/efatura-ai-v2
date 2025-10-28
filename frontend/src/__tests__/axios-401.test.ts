@@ -3,11 +3,18 @@ import { api } from '../lib/api'
 
 describe('axios 401 interceptor', () => {
   beforeEach(() => {
+    const store: Record<string, string> = {}
     const storageMock = {
-      getItem: vi.fn(),
-      setItem: vi.fn(),
-      removeItem: vi.fn(),
-      clear: vi.fn(),
+      getItem: vi.fn((k: string) => (Object.prototype.hasOwnProperty.call(store, k) ? store[k] : null)),
+      setItem: vi.fn((k: string, v: string) => {
+        store[k] = String(v)
+      }),
+      removeItem: vi.fn((k: string) => {
+        delete store[k]
+      }),
+      clear: vi.fn(() => {
+        for (const k of Object.keys(store)) delete store[k]
+      }),
     } as unknown as Storage
     Object.defineProperty(window, 'localStorage', { value: storageMock, configurable: true })
     window.localStorage.setItem('token', 'x')
