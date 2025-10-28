@@ -24,6 +24,12 @@ allprojects {
 subprojects {
     apply(plugin = "io.spring.dependency-management")
     apply(plugin = "jacoco")
+    // Force Java toolchain 21 across CI and local
+    plugins.withId("java") {
+        the<JavaPluginExtension>().toolchain {
+            languageVersion.set(JavaLanguageVersion.of(21))
+        }
+    }
     repositories {
         mavenCentral()
     }
