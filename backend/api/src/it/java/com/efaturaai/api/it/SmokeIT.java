@@ -74,7 +74,7 @@ public class SmokeIT extends TestcontainersSupport {
 
     // actuator metric assertion (retry briefly for consistency in CI)
     double metricVal = 0.0;
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 30; i++) {
       ResponseEntity<Map> metric =
           rest.getForEntity(base + "/actuator/metrics/invoices.created.count", Map.class);
       if (metric.getStatusCode() == HttpStatus.OK && metric.getBody() != null) {
@@ -86,13 +86,17 @@ public class SmokeIT extends TestcontainersSupport {
           if (metricVal > 0.0) break;
         }
       }
-      try { Thread.sleep(100); } catch (InterruptedException ignored) {}
+      try {
+        Thread.sleep(200);
+      } catch (InterruptedException ignored) {
+      }
     }
     assertThat(metricVal).isGreaterThan(0.0);
 
     // MDC contains tenantId
-    boolean mdcOk = appender.list.stream()
-        .anyMatch(ev -> tenant.toString().equals(ev.getMDCPropertyMap().get("tenantId")));
+    boolean mdcOk =
+        appender.list.stream()
+            .anyMatch(ev -> tenant.toString().equals(ev.getMDCPropertyMap().get("tenantId")));
     assertThat(mdcOk).isTrue();
 
     // sign

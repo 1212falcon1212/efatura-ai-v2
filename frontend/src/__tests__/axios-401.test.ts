@@ -3,7 +3,14 @@ import { api } from '../lib/api'
 
 describe('axios 401 interceptor', () => {
   beforeEach(() => {
-    localStorage.setItem('token', 'x')
+    const storageMock = {
+      getItem: vi.fn(),
+      setItem: vi.fn(),
+      removeItem: vi.fn(),
+      clear: vi.fn(),
+    } as unknown as Storage
+    Object.defineProperty(window, 'localStorage', { value: storageMock, configurable: true })
+    window.localStorage.setItem('token', 'x')
     // stub window.location
     // @ts-expect-error override for test
     delete window.location
