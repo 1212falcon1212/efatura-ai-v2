@@ -8,6 +8,6 @@ all:
 	make unit && make it && make fe
 
 fe:
-	cd frontend && npm ci && npm run build && npm test
+	cd frontend && npm ci && npm run build && npm test && npm run e2e
 
 
