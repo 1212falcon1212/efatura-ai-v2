@@ -16,11 +16,14 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class InvoiceService {
+  private static final Logger log = LoggerFactory.getLogger(InvoiceService.class);
   private final InvoiceRepository invoiceRepository;
   private final CustomerRepository customerRepository;
   private final OutboxRepository outboxRepository;
@@ -78,7 +81,9 @@ public class InvoiceService {
     inv.setStatus(InvoiceStatus.DRAFT);
     inv.setCreatedAt(OffsetDateTime.now());
     meterRegistry.counter("invoices.created.count").increment();
-    return invoiceRepository.save(inv);
+    Invoice saved = invoiceRepository.save(inv);
+    log.info("Invoice created: {}", saved.getId());
+    return saved;
   }
 
   @Transactional

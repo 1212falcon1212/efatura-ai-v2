@@ -12,6 +12,7 @@
     "jsx": "react-jsx",
     "strict": true,
     "baseUrl": ".",
+    "types": ["vitest", "node"],
     "paths": {
       "@/components/*": ["src/components/*"],
       "@/pages/*": ["src/pages/*"],
