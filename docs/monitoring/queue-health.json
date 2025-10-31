@@ -1,0 +1,71 @@
+{
+  "dashboard": {
+    "title": "Queue Health",
+    "tags": ["queue", "rabbitmq", "messaging"],
+    "timezone": "browser",
+    "schemaVersion": 38,
+    "version": 1,
+    "refresh": "30s",
+    "panels": [
+      {
+        "id": 1,
+        "title": "Queue Depth",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rabbitmq_queue_messages",
+            "refId": "A",
+            "legendFormat": "{{queue}}"
+          }
+        ],
+        "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 }
+      },
+      {
+        "id": 2,
+        "title": "Message Rate",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(rabbitmq_queue_messages_published_total[5m])",
+            "refId": "A",
+            "legendFormat": "Published"
+          },
+          {
+            "expr": "rate(rabbitmq_queue_messages_delivered_total[5m])",
+            "refId": "B",
+            "legendFormat": "Delivered"
+          }
+        ],
+        "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 }
+      },
+      {
+        "id": 3,
+        "title": "Retry Success Ratio",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "rate(ai_retry_success_ratio[5m])",
+            "refId": "A"
+          }
+        ],
+        "gridPos": { "h": 8, "w": 6, "x": 0, "y": 16 }
+      },
+      {
+        "id": 4,
+        "title": "DLQ Messages",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "rabbitmq_queue_messages{queue=~\"*dlq*\"}",
+            "refId": "A"
+          }
+        ],
+        "gridPos": { "h": 8, "w": 6, "x": 6, "y": 16 }
+      }
+    ],
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    }
+  }
+}

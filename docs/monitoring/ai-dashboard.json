@@ -1,0 +1,82 @@
+{
+  "dashboard": {
+    "title": "eFatura AI - Monitoring Dashboard",
+    "tags": ["efatura", "ai", "monitoring"],
+    "timezone": "browser",
+    "schemaVersion": 38,
+    "version": 1,
+    "refresh": "30s",
+    "panels": [
+      {
+        "id": 1,
+        "title": "Error Classification Total",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "ai_error_classification_total",
+            "refId": "A"
+          }
+        ],
+        "gridPos": { "h": 8, "w": 6, "x": 0, "y": 0 },
+        "fieldConfig": {
+          "defaults": {
+            "color": { "mode": "palette-classic" },
+            "unit": "short"
+          }
+        }
+      },
+      {
+        "id": 2,
+        "title": "Error Count by Type",
+        "type": "piechart",
+        "targets": [
+          {
+            "expr": "ai_error_count",
+            "refId": "A"
+          }
+        ],
+        "gridPos": { "h": 8, "w": 6, "x": 6, "y": 0 }
+      },
+      {
+        "id": 3,
+        "title": "Error Rate Over Time",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(ai_error_classification_total[5m])",
+            "refId": "A",
+            "legendFormat": "Errors/sec"
+          }
+        ],
+        "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
+        "xAxis": { "mode": "time" },
+        "yAxes": [
+          {
+            "format": "short",
+            "label": "Rate"
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "title": "Error Distribution",
+        "type": "bargauge",
+        "targets": [
+          {
+            "expr": "ai_error_count",
+            "refId": "A"
+          }
+        ],
+        "gridPos": { "h": 8, "w": 12, "x": 0, "y": 16 },
+        "options": {
+          "orientation": "horizontal",
+          "displayMode": "gradient"
+        }
+      }
+    ],
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    }
+  }
+}

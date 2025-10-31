@@ -15,7 +15,9 @@ public class OutboxConsumer {
     this.repository = repository;
   }
 
-  @RabbitListener(queues = "${messaging.outbox.queue:outbox.queue}")
+  @RabbitListener(
+      queues = "${messaging.outbox.queue:outbox.queue}",
+      containerFactory = "outboxListenerContainerFactory")
   @Transactional
   public void consume(
       String payload, @Header(name = "outboxId", required = false) String outboxId) {

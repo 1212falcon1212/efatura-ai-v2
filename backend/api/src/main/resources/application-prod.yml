@@ -1,0 +1,149 @@
+spring:
+  application:
+    name: efatura-api
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:${DATASOURCE_URL:jdbc:postgresql://postgres:5432/efatura}}
+    username: ${SPRING_DATASOURCE_USERNAME:${DATASOURCE_USERNAME:efatura}}
+    password: ${SPRING_DATASOURCE_PASSWORD:${DATASOURCE_PASSWORD:efatura}}
+    hikari:
+      maximum-pool-size: ${DATASOURCE_MAX_POOL_SIZE:20}
+      minimum-idle: ${DATASOURCE_MIN_IDLE:5}
+      idle-timeout: 30000
+      max-lifetime: 600000
+      connection-timeout: 30000
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        format_sql: false
+        show_sql: false
+        session_factory:
+          statement_inspector: com.efaturaai.core.jpa.TenantStatementInspector
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+    enabled: ${LIQUIBASE_ENABLED:false}
+  rabbitmq:
+    host: ${SPRING_RABBITMQ_HOST:${RABBITMQ_HOST:rabbitmq}}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${SPRING_RABBITMQ_USERNAME:${RABBITMQ_USERNAME:guest}}
+    password: ${SPRING_RABBITMQ_PASSWORD:${RABBITMQ_PASSWORD:guest}}
+    virtual-host: ${RABBITMQ_VHOST:/}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+      base-path: /actuator
+  endpoint:
+    health:
+      show-details: when-authorized
+      probes:
+        enabled: true
+  health:
+    liveness-state:
+      enabled: true
+    readiness-state:
+      enabled: true
+    redis:
+      enabled: false
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+    tags:
+      application: ${spring.application.name}
+      environment: ${SPRING_PROFILES_ACTIVE:prod}
+  tracing:
+    enabled: ${TRACING_ENABLED:true}
+    sampling:
+      probability: ${TRACING_SAMPLING_PROBABILITY:0.1}
+  otlp:
+    tracing:
+      endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT:http://jaeger:4318/v1/traces}
+
+cache:
+  redis:
+    enabled: ${REDIS_ENABLED:false}
+    host: ${REDIS_HOST:redis}
+    port: ${REDIS_PORT:6379}
+  caffeine:
+    ttlMinutes: 10
+    maxSize: 1000
+
+logging:
+  level:
+    root: INFO
+    com.efaturaai: ${LOG_LEVEL:INFO}
+    org.springframework.security: WARN
+    org.hibernate.SQL: WARN
+    org.hibernate.type.descriptor.sql.BasicBinder: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level [%X{traceId}] [%X{tenantId}] %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level [%X{traceId}] [%X{tenantId}] %logger{36} - %msg%n"
+  file:
+    name: ${LOG_FILE_PATH:/var/log/app.log}
+    max-size: 100MB
+    max-history: 30
+
+provider:
+  soap:
+    mode: ${KOLAYSOFT_MODE:live}
+    endpoint:
+      sandbox: ${PROVIDER_SANDBOX_ENDPOINT:http://localhost:18080/ws}
+      live: ${PROVIDER_LIVE_ENDPOINT:https://service.smartdonusum.com}
+    username: ${PROVIDER_USERNAME:demo}
+    password: ${PROVIDER_PASSWORD:demo}
+    sourceUrn: ${PROVIDER_SOURCE_URN:}
+    earchive:
+      mode: ${EARCHIVE_MODE:live}
+      endpoint:
+        sandbox: ${PROVIDER_SANDBOX_EARCHIVE_ENDPOINT:http://localhost:18080/earchive/ws}
+        live: ${PROVIDER_LIVE_EARCHIVE_ENDPOINT:https://service.smartdonusum.com/EArchiveInvoiceService/EArchiveInvoiceWS}
+    query:
+      mode: ${EINVOICE_QUERY_MODE:live}
+      endpoint:
+        sandbox: ${PROVIDER_SANDBOX_QUERY_ENDPOINT:http://localhost:18080/query/ws}
+        live: ${PROVIDER_LIVE_QUERY_ENDPOINT:https://service.smartdonusum.com/QueryInvoiceService/QueryDocumentWS}
+
+storage:
+  minio:
+    endpoint: ${STORAGE_MINIO_ENDPOINT:${MINIO_ENDPOINT:http://minio:9000}}
+    accessKey: ${MINIO_ACCESS_KEY:minioadmin}
+    secretKey: ${MINIO_SECRET_KEY:minioadmin}
+    bucket: ${MINIO_BUCKET:efatura}
+    retentionDays: ${MINIO_RETENTION_DAYS:1825}
+    objectLockEnabled: ${MINIO_OBJECT_LOCK_ENABLED:false}
+
+signer:
+  pkcs11:
+    libraryPath: ${PKCS11_LIBRARY_PATH:/opt/pkcs11/lib.so}
+    slot: ${PKCS11_SLOT:0}
+    pin: ${PKCS11_PIN:}
+
+messaging:
+  outbox:
+    exchange: ${OUTBOX_EXCHANGE:outbox.exchange}
+    queue: ${OUTBOX_QUEUE:outbox.queue}
+    routing: ${OUTBOX_ROUTING:outbox.routing}
+
+outbox:
+  retry:
+    maxAttempts: ${OUTBOX_MAX_ATTEMPTS:3}
+    baseDelaySec: ${OUTBOX_BASE_DELAY_SEC:2}
+
+security:
+  permitAll: ${SECURITY_PERMITALL:${SECURITY_PERMIT_ALL:false}}
+  jwt:
+    secret: ${JWT_SECRET:}
+    expiration: ${JWT_EXPIRATION:86400000}
+
+server:
+  port: ${SERVER_PORT:8080}
+  error:
+    include-message: never
+    include-stacktrace: never
+  compression:
+    enabled: true
+    mime-types: application/json,application/xml,text/html,text/xml,text/plain

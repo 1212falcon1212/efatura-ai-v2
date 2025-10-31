@@ -1,0 +1,106 @@
+# Build outputs
+build/
+target/
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+dist/
+out/
+
+# Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+*.iml
+.idea/
+*.ipr
+*.iws
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+dist/
+dist-ssr/
+*.local
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+
+# Docker
+*.env.local
+*.env.*.local
+
+# Test coverage
+coverage/
+.nyc_output/
+*.lcov
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+tmp/
+temp/
+
+# Application specific
+*.pid
+*.seed
+*.pid.lock
+
+# Liquibase
+liquibase.properties.local
+
+# Application logs
+logs/app.log
+*.log.*
+
+# Frontend build
+frontend/dist/
+frontend/.vite/
+
+# Backend build
+backend/api/build/
+backend/core/build/
+backend/infra/build/
+backend/soap/build/
+backend/ubl/build/
+backend/signer/build/
+backend/ai-core/build/
+backend/ai-ops/build/
+backend/ai-insights/build/
+backend/ai-gateway/build/
+
+# Gradle wrapper (keep it)
+!gradle/wrapper/gradle-wrapper.jar
+!gradle/wrapper/gradle-wrapper.properties
+

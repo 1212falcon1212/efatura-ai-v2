@@ -1,0 +1,137 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: efatura-postgres-prod
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-efatura}
+      POSTGRES_USER: ${POSTGRES_USER:-efatura}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-efatura}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-efatura} -d ${POSTGRES_DB:-efatura}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - efatura-network
+
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    container_name: efatura-rabbitmq-prod
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-guest}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-guest}
+    ports:
+      - "${RABBITMQ_PORT:-5672}:5672"
+      - "${RABBITMQ_MANAGEMENT_PORT:-15672}:15672"
+    volumes:
+      - rabbitmqdata:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    networks:
+      - efatura-network
+
+  minio:
+    image: quay.io/minio/minio:RELEASE.2024-09-22T00-33-43Z
+    container_name: efatura-minio-prod
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY:-minioadmin}
+    ports:
+      - "${MINIO_PORT:-9000}:9000"
+      - "${MINIO_CONSOLE_PORT:-9001}:9001"
+    volumes:
+      - miniodata:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    networks:
+      - efatura-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: efatura-backend:latest
+    container_name: efatura-backend-prod
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      LIQUIBASE_ENABLED: ${LIQUIBASE_ENABLED:-true}
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-efatura}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-efatura}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-efatura}
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_USERNAME: ${RABBITMQ_USER:-guest}
+      SPRING_RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD:-guest}
+      STORAGE_MINIO_ENDPOINT: http://minio:9000
+      MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY:-minioadmin}
+      MINIO_SECRET_KEY: ${MINIO_SECRET_KEY:-minioadmin}
+      MINIO_BUCKET: ${MINIO_BUCKET:-efatura}
+      JWT_SECRET: ${JWT_SECRET:-change-me-in-production-for-testing-only}
+      SECURITY_PERMITALL: ${SECURITY_PERMIT_ALL:-true}
+      PROVIDER_USERNAME: ${PROVIDER_USERNAME:-demo}
+      PROVIDER_PASSWORD: ${PROVIDER_PASSWORD:-demo}
+      PROVIDER_SOURCE_URN: ${PROVIDER_SOURCE_URN:-}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+    ports:
+      - "${BACKEND_PORT:-8080}:8080"
+    restart: unless-stopped
+    # Temporarily disable healthcheck to debug restart issue
+    # healthcheck:
+    #   test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+    #   interval: 30s
+    #   timeout: 10s
+    #   retries: 5
+    #   start_period: 90s
+    networks:
+      - efatura-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    image: efatura-frontend:latest
+    container_name: efatura-frontend-prod
+    depends_on:
+      - backend
+    ports:
+      - "${FRONTEND_PORT:-80}:80"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+    networks:
+      - efatura-network
+
+volumes:
+  pgdata:
+    driver: local
+  rabbitmqdata:
+    driver: local
+  miniodata:
+    driver: local
+
+networks:
+  efatura-network:
+    driver: bridge

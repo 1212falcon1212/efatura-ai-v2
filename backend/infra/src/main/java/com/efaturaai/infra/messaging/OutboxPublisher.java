@@ -28,6 +28,9 @@ public class OutboxPublisher {
         message.getPayload(),
         m -> {
           m.getMessageProperties().setHeader("outboxId", message.getId().toString());
+          m.getMessageProperties().setHeader("eventType", message.getEventType());
+          m.getMessageProperties().setHeader("aggregateType", message.getAggregateType());
+          m.getMessageProperties().setHeader("aggregateId", message.getAggregateId());
           return m;
         });
   }
