@@ -22,7 +22,9 @@ jobs:
           java-version: '21'
           cache: 'gradle'
       - name: Unit tests
-        run: make unit || (cd backend && ./gradlew clean build -x itTest --no-daemon)
+        run: |
+          cd backend
+          ./gradlew clean build -x itTest --no-daemon || make unit
 
   backend-it:
     name: Backend Integration Tests

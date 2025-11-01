@@ -2,8 +2,8 @@ plugins { id("java-library") }
 
 dependencies {
     implementation(project(":core"))
-    implementation(project(":ai-core"))
-    implementation(project(":ai-ops"))
+    // Note: ai-core and ai-ops dependencies are only needed if InvoiceSendFailedConsumer is used
+    // They are added via api module, not directly here to avoid build issues
     implementation("org.springframework.boot:spring-boot-starter-amqp")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-web")
@@ -15,5 +15,3 @@ dependencies {
 java { toolchain { languageVersion.set(JavaLanguageVersion.of(21)) } }
 
 tasks.test { useJUnitPlatform() }
-
-
