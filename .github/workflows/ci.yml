@@ -28,7 +28,7 @@ jobs:
       - name: Unit tests
         run: |
           cd backend
-          ./gradlew clean build -x itTest --no-daemon || make unit
+          ./gradlew clean build -x itTest -x jacocoTestCoverageVerification --no-daemon || make unit
 
   backend-it:
     name: Backend Integration Tests

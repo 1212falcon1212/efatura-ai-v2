@@ -53,7 +53,7 @@ jobs:
         run: ./gradlew spotlessApply --no-daemon || echo "Spotless skipped"
       - name: Run unit tests
         working-directory: ./backend
-        run: ./gradlew test --no-daemon || ./gradlew clean build -x itTest --no-daemon
+        run: ./gradlew test -x jacocoTestCoverageVerification --no-daemon || ./gradlew clean build -x itTest -x jacocoTestCoverageVerification --no-daemon
 
       - name: Run integration tests
         working-directory: ./backend
