@@ -18,6 +18,7 @@ import com.efaturaai.core.repository.InvoiceLineRepository;
 import com.efaturaai.core.repository.InvoiceRepository;
 import com.efaturaai.core.repository.OutboxRepository;
 import com.efaturaai.core.storage.StorageService;
+import com.efaturaai.core.tenant.TenantContext;
 import com.efaturaai.infra.messaging.OutboxPublisher;
 import com.efaturaai.infra.webhook.WebhookService;
 import com.efaturaai.signer.SignerService;
@@ -79,6 +80,7 @@ public class InvoiceServiceTest {
 
     // seed
     UUID tenant = UUID.randomUUID();
+    TenantContext.setTenantId(tenant);
     Customer c = new Customer();
     c.setId(UUID.randomUUID());
     c.setTenantId(tenant);
