@@ -38,11 +38,17 @@ jobs:
         uses: actions/checkout@v4
       - name: Debug Check AI module files
         run: |
+          echo "=== Current Directory ==="
+          pwd
+          echo ""
+          echo "=== Directory Structure ==="
+          ls -la backend/ 2>&1 | head -20
+          echo ""
           echo "=== AI Module Files Check ==="
-          ls -la backend/ai-core/build.gradle.kts 2>&1 || echo "ai-core/build.gradle.kts NOT FOUND"
-          ls -la backend/ai-ops/build.gradle.kts 2>&1 || echo "ai-ops/build.gradle.kts NOT FOUND"
-          ls -la backend/ai-insights/build.gradle.kts 2>&1 || echo "ai-insights/build.gradle.kts NOT FOUND"
-          ls -la backend/ai-gateway/build.gradle.kts 2>&1 || echo "ai-gateway/build.gradle.kts NOT FOUND"
+          test -f backend/ai-core/build.gradle.kts && echo "OK: ai-core/build.gradle.kts EXISTS" || echo "ERROR: ai-core/build.gradle.kts NOT FOUND"
+          test -f backend/ai-ops/build.gradle.kts && echo "OK: ai-ops/build.gradle.kts EXISTS" || echo "ERROR: ai-ops/build.gradle.kts NOT FOUND"
+          test -f backend/ai-insights/build.gradle.kts && echo "OK: ai-insights/build.gradle.kts EXISTS" || echo "ERROR: ai-insights/build.gradle.kts NOT FOUND"
+          test -f backend/ai-gateway/build.gradle.kts && echo "OK: ai-gateway/build.gradle.kts EXISTS" || echo "ERROR: ai-gateway/build.gradle.kts NOT FOUND"
           echo ""
           echo "=== Git Status ==="
           git log --oneline -5
@@ -52,6 +58,9 @@ jobs:
           echo ""
           echo "=== Settings.gradle.kts ==="
           cat backend/settings.gradle.kts
+          echo ""
+          echo "=== Gradle Projects Check ==="
+          cd backend && ./gradlew projects --no-daemon 2>&1 | grep -E "(ai-core|ai-ops|ai-insights|ai-gateway)" || echo "Gradle projects check failed"
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
