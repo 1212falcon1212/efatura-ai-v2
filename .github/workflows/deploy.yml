@@ -53,6 +53,22 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
+      - name: Debug: Check AI module files
+        run: |
+          echo "=== AI Module Files Check ==="
+          ls -la backend/ai-core/build.gradle.kts 2>&1 || echo "❌ ai-core/build.gradle.kts NOT FOUND"
+          ls -la backend/ai-ops/build.gradle.kts 2>&1 || echo "❌ ai-ops/build.gradle.kts NOT FOUND"
+          ls -la backend/ai-insights/build.gradle.kts 2>&1 || echo "❌ ai-insights/build.gradle.kts NOT FOUND"
+          ls -la backend/ai-gateway/build.gradle.kts 2>&1 || echo "❌ ai-gateway/build.gradle.kts NOT FOUND"
+          echo ""
+          echo "=== Git Status ==="
+          git log --oneline -5
+          echo ""
+          echo "=== Git Files (AI modules) ==="
+          git ls-files backend/ai-core/ backend/ai-ops/ backend/ai-insights/ backend/ai-gateway/ | head -15
+          echo ""
+          echo "=== Settings.gradle.kts ==="
+          cat backend/settings.gradle.kts
       - name: Apply Spotless formatting
         working-directory: ./backend
         run: ./gradlew spotlessApply --no-daemon || echo "Spotless skipped"
