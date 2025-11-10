@@ -229,7 +229,7 @@ jobs:
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
     environment:
       name: production
-      url: https://app.efatura.ai
+      url: https://efatura.ai
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
