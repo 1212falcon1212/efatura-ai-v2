@@ -8,19 +8,15 @@ import com.efaturaai.core.domain.InvoiceDocumentType;
 import com.efaturaai.core.domain.InvoiceStatus;
 import com.efaturaai.core.domain.OutboxMessage;
 import com.efaturaai.core.domain.OutboxStatus;
+import com.efaturaai.core.provider.EInvoiceProviderPort;
 import com.efaturaai.core.provider.ProviderException;
-import com.efaturaai.core.provider.ProviderInvoicePort;
 import com.efaturaai.core.repository.CustomerRepository;
-import com.efaturaai.core.repository.InvoiceLineRepository;
 import com.efaturaai.core.repository.InvoiceRepository;
 import com.efaturaai.core.repository.OutboxRepository;
-import com.efaturaai.core.storage.StorageService;
 import com.efaturaai.core.tenant.TenantContext;
 import com.efaturaai.infra.messaging.OutboxPublisher;
-import com.efaturaai.infra.webhook.WebhookService;
 import com.efaturaai.signer.SignerService;
 import com.efaturaai.ubl.UblInvoiceBuilder;
-import com.efaturaai.ubl.UblValidator;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -46,34 +42,23 @@ public class InvoiceServiceTest {
   void send_should_throw_provider_exception_on_non_zero_code() {
     InvoiceRepository invoiceRepo = new InMemoryInvoiceRepo();
     CustomerRepository customerRepo = new InMemoryCustomerRepo();
-    InvoiceLineRepository invoiceLineRepo = new InMemoryInvoiceLineRepo();
     OutboxRepository outboxRepo = new NoopOutboxRepo();
     OutboxPublisher outboxPublisher = new MockOutboxPublisher();
     UblInvoiceBuilder ublBuilder = new UblInvoiceBuilder();
     SignerService signer = new MockSignerService();
-    ProviderInvoicePort eInvoiceProvider = new MockProviderInvoicePort();
-    ProviderInvoicePort eArchiveProvider = new MockProviderInvoicePort();
+    EInvoiceProviderPort providerClient = new MockEInvoiceProviderPort();
     SimpleMeterRegistry metrics = new SimpleMeterRegistry();
-    WebhookService webhook = new MockWebhookService();
-    StorageService storage = new MockStorageService();
-    UblValidator validator = new UblValidator();
 
     InvoiceService service =
         new InvoiceService(
             invoiceRepo,
             customerRepo,
-            invoiceLineRepo,
             outboxRepo,
             outboxPublisher,
             ublBuilder,
             signer,
-            eInvoiceProvider,
-            eArchiveProvider,
-            metrics,
-            webhook,
-            storage,
-            validator,
-            "urn:test:source");
+            providerClient,
+            metrics);
 
     // seed
     UUID tenant = UUID.randomUUID();
@@ -100,7 +85,7 @@ public class InvoiceServiceTest {
     inv.setCreatedAt(OffsetDateTime.now());
     invoiceRepo.save(inv);
 
-    assertThrows(ProviderException.class, () -> service.send(inv.getId(), "test@example.com", "n"));
+    assertThrows(ProviderException.class, () -> service.send(inv.getId()));
   }
 
   // Mock implementations
@@ -123,93 +108,21 @@ public class InvoiceServiceTest {
     }
   }
 
-  static class MockProviderInvoicePort implements ProviderInvoicePort {
+  static class MockEInvoiceProviderPort implements EInvoiceProviderPort {
     @Override
-    public List<com.efaturaai.core.provider.EntResponse> sendInvoice(List<com.efaturaai.core.provider.InputDocument> documents) {
-      com.efaturaai.core.provider.EntResponse r = new com.efaturaai.core.provider.EntResponse();
-      r.code = "2001";
-      r.explanation = "invalid document";
-      r.documentUUID = documents.get(0).documentUUID;
-      return List.of(r);
+    public com.efaturaai.core.provider.ProviderSendResponse sendInvoice(String xml) {
+      throw new ProviderException("2001", "invalid document");
     }
-    @Override
-    public List<com.efaturaai.core.provider.EntResponse> updateInvoice(List<com.efaturaai.core.provider.InputDocument> documents) {
-      return sendInvoice(documents);
-    }
-    @Override
-    public com.efaturaai.core.provider.EntResponse cancelInvoice(String invoiceUuid, String cancelReason, String cancelDate) {
-      com.efaturaai.core.provider.EntResponse r = new com.efaturaai.core.provider.EntResponse();
-      r.code = "2001";
-      r.explanation = "cancel failed";
-      r.documentUUID = invoiceUuid;
-      return r;
-    }
-  }
-
-  static class MockWebhookService extends WebhookService {
-    public MockWebhookService() {
-      super(null, null);
-    }
-    @Override
-    public void publish(String eventType, String jsonPayload) {}
-  }
-
-  static class MockStorageService implements StorageService {
-    @Override
-    public String store(UUID tenantId, String type, int year, String objectName, byte[] data, String contentType, Map<String, String> userMetadata) {
-      return "stored";
-    }
-  }
-
-  static class InMemoryInvoiceLineRepo implements InvoiceLineRepository {
-    private Map<UUID, com.efaturaai.core.domain.InvoiceLine> map = new HashMap<>();
     
-    @Override public <S extends com.efaturaai.core.domain.InvoiceLine> S save(S entity) { map.put(entity.getId(), entity); return entity; }
-    @Override public Optional<com.efaturaai.core.domain.InvoiceLine> findById(UUID uuid) { return Optional.ofNullable(map.get(uuid)); }
-    @Override public List<com.efaturaai.core.domain.InvoiceLine> findAll() { return new ArrayList<>(map.values()); }
-    @Override public void deleteById(UUID uuid) { map.remove(uuid); }
-    @Override public boolean existsById(UUID uuid) { return map.containsKey(uuid); }
-    @Override public long count() { return map.size(); }
-    @Override public void delete(com.efaturaai.core.domain.InvoiceLine entity) { map.remove(entity.getId()); }
-    @Override public void deleteAllById(Iterable<? extends UUID> uuids) { uuids.forEach(map::remove); }
-    @Override public void deleteAll(Iterable<? extends com.efaturaai.core.domain.InvoiceLine> entities) { entities.forEach(e -> map.remove(e.getId())); }
-    @Override public void deleteAll() { map.clear(); }
-    @Override public <S extends com.efaturaai.core.domain.InvoiceLine> List<S> saveAll(Iterable<S> entities) { 
-      List<S> result = new ArrayList<>();
-      entities.forEach(e -> result.add(save(e)));
-      return result;
+    @Override
+    public com.efaturaai.core.provider.ProviderStatusResponse getInvoiceStatus(String invoiceUuid) {
+      return null;
     }
-    @Override public List<com.efaturaai.core.domain.InvoiceLine> findAllById(Iterable<UUID> uuids) { 
-      return StreamSupport.stream(uuids.spliterator(), false)
-          .map(map::get)
-          .filter(java.util.Objects::nonNull)
-          .collect(Collectors.toList());
+    
+    @Override
+    public com.efaturaai.core.provider.ProviderCancelResponse cancelInvoice(String invoiceUuid) {
+      return null;
     }
-    @Override public void flush() {}
-    @Override public <S extends com.efaturaai.core.domain.InvoiceLine> S saveAndFlush(S entity) { return save(entity); }
-    @Override public void deleteAllInBatch(Iterable<com.efaturaai.core.domain.InvoiceLine> entities) { entities.forEach(e -> map.remove(e.getId())); }
-    @Override public void deleteAllInBatch() { map.clear(); }
-    @Override public com.efaturaai.core.domain.InvoiceLine getOne(UUID uuid) { return map.get(uuid); }
-    @Override public com.efaturaai.core.domain.InvoiceLine getById(UUID uuid) { return map.get(uuid); }
-    @Override public <S extends com.efaturaai.core.domain.InvoiceLine> List<S> saveAllAndFlush(Iterable<S> entities) { return saveAll(entities); }
-    @Override public com.efaturaai.core.domain.InvoiceLine getReferenceById(UUID uuid) { return map.get(uuid); }
-    @Override public void deleteAllByIdInBatch(Iterable<UUID> uuids) { uuids.forEach(map::remove); }
-    
-    // QueryByExampleExecutor methods
-    @Override public <S extends com.efaturaai.core.domain.InvoiceLine> Optional<S> findOne(Example<S> example) { return Optional.empty(); }
-    @Override public <S extends com.efaturaai.core.domain.InvoiceLine> List<S> findAll(Example<S> example) { return List.of(); }
-    @Override public <S extends com.efaturaai.core.domain.InvoiceLine> List<S> findAll(Example<S> example, Sort sort) { return List.of(); }
-    @Override public <S extends com.efaturaai.core.domain.InvoiceLine> Page<S> findAll(Example<S> example, Pageable pageable) { return Page.empty(); }
-    @Override public <S extends com.efaturaai.core.domain.InvoiceLine> long count(Example<S> example) { return 0; }
-    @Override public <S extends com.efaturaai.core.domain.InvoiceLine> boolean exists(Example<S> example) { return false; }
-    @Override public <S extends com.efaturaai.core.domain.InvoiceLine, R> R findBy(Example<S> example, java.util.function.Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction) { return null; }
-    
-    // PagingAndSortingRepository methods
-    @Override public List<com.efaturaai.core.domain.InvoiceLine> findAll(Sort sort) { return findAll(); }
-    @Override public Page<com.efaturaai.core.domain.InvoiceLine> findAll(Pageable pageable) { return Page.empty(); }
-    
-    // InvoiceLineRepository specific method
-    @Override public List<com.efaturaai.core.domain.InvoiceLine> findByInvoiceId(UUID invoiceId) { return map.values().stream().filter(l -> l.getInvoiceId().equals(invoiceId)).collect(Collectors.toList()); }
   }
 
 
