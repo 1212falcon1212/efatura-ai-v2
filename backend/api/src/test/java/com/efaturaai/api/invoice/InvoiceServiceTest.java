@@ -5,12 +5,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import com.efaturaai.core.domain.Customer;
 import com.efaturaai.core.domain.Invoice;
 import com.efaturaai.core.domain.InvoiceDocumentType;
-import com.efaturaai.core.domain.InvoiceLine;
 import com.efaturaai.core.domain.InvoiceStatus;
 import com.efaturaai.core.domain.OutboxMessage;
 import com.efaturaai.core.domain.OutboxStatus;
-import com.efaturaai.core.provider.EntResponse;
-import com.efaturaai.core.provider.InputDocument;
 import com.efaturaai.core.provider.ProviderException;
 import com.efaturaai.core.provider.ProviderInvoicePort;
 import com.efaturaai.core.repository.CustomerRepository;
@@ -99,7 +96,7 @@ public class InvoiceServiceTest {
     inv.setTotalNet(new BigDecimal("100"));
     inv.setTotalVat(new BigDecimal("18"));
     inv.setStatus(InvoiceStatus.DRAFT);
-    inv.setType(InvoiceDocumentType.INVOICE);
+    inv.setType(InvoiceDocumentType.EINVOICE);
     inv.setCreatedAt(OffsetDateTime.now());
     invoiceRepo.save(inv);
 
@@ -128,20 +125,20 @@ public class InvoiceServiceTest {
 
   static class MockProviderInvoicePort implements ProviderInvoicePort {
     @Override
-    public List<EntResponse> sendInvoice(List<InputDocument> documents) {
-      EntResponse r = new EntResponse();
+    public List<com.efaturaai.core.provider.EntResponse> sendInvoice(List<com.efaturaai.core.provider.InputDocument> documents) {
+      com.efaturaai.core.provider.EntResponse r = new com.efaturaai.core.provider.EntResponse();
       r.code = "2001";
       r.explanation = "invalid document";
       r.documentUUID = documents.get(0).documentUUID;
       return List.of(r);
     }
     @Override
-    public List<EntResponse> updateInvoice(List<InputDocument> documents) {
+    public List<com.efaturaai.core.provider.EntResponse> updateInvoice(List<com.efaturaai.core.provider.InputDocument> documents) {
       return sendInvoice(documents);
     }
     @Override
-    public EntResponse cancelInvoice(String invoiceUuid, String cancelReason, String cancelDate) {
-      EntResponse r = new EntResponse();
+    public com.efaturaai.core.provider.EntResponse cancelInvoice(String invoiceUuid, String cancelReason, String cancelDate) {
+      com.efaturaai.core.provider.EntResponse r = new com.efaturaai.core.provider.EntResponse();
       r.code = "2001";
       r.explanation = "cancel failed";
       r.documentUUID = invoiceUuid;
@@ -163,6 +160,58 @@ public class InvoiceServiceTest {
       return "stored";
     }
   }
+
+  static class InMemoryInvoiceLineRepo implements InvoiceLineRepository {
+    private Map<UUID, com.efaturaai.core.domain.InvoiceLine> map = new HashMap<>();
+    
+    @Override public <S extends com.efaturaai.core.domain.InvoiceLine> S save(S entity) { map.put(entity.getId(), entity); return entity; }
+    @Override public Optional<com.efaturaai.core.domain.InvoiceLine> findById(UUID uuid) { return Optional.ofNullable(map.get(uuid)); }
+    @Override public List<com.efaturaai.core.domain.InvoiceLine> findAll() { return new ArrayList<>(map.values()); }
+    @Override public void deleteById(UUID uuid) { map.remove(uuid); }
+    @Override public boolean existsById(UUID uuid) { return map.containsKey(uuid); }
+    @Override public long count() { return map.size(); }
+    @Override public void delete(com.efaturaai.core.domain.InvoiceLine entity) { map.remove(entity.getId()); }
+    @Override public void deleteAllById(Iterable<? extends UUID> uuids) { uuids.forEach(map::remove); }
+    @Override public void deleteAll(Iterable<? extends com.efaturaai.core.domain.InvoiceLine> entities) { entities.forEach(e -> map.remove(e.getId())); }
+    @Override public void deleteAll() { map.clear(); }
+    @Override public <S extends com.efaturaai.core.domain.InvoiceLine> List<S> saveAll(Iterable<S> entities) { 
+      List<S> result = new ArrayList<>();
+      entities.forEach(e -> result.add(save(e)));
+      return result;
+    }
+    @Override public List<com.efaturaai.core.domain.InvoiceLine> findAllById(Iterable<UUID> uuids) { 
+      return StreamSupport.stream(uuids.spliterator(), false)
+          .map(map::get)
+          .filter(java.util.Objects::nonNull)
+          .collect(Collectors.toList());
+    }
+    @Override public void flush() {}
+    @Override public <S extends com.efaturaai.core.domain.InvoiceLine> S saveAndFlush(S entity) { return save(entity); }
+    @Override public void deleteAllInBatch(Iterable<com.efaturaai.core.domain.InvoiceLine> entities) { entities.forEach(e -> map.remove(e.getId())); }
+    @Override public void deleteAllInBatch() { map.clear(); }
+    @Override public com.efaturaai.core.domain.InvoiceLine getOne(UUID uuid) { return map.get(uuid); }
+    @Override public com.efaturaai.core.domain.InvoiceLine getById(UUID uuid) { return map.get(uuid); }
+    @Override public <S extends com.efaturaai.core.domain.InvoiceLine> List<S> saveAllAndFlush(Iterable<S> entities) { return saveAll(entities); }
+    @Override public com.efaturaai.core.domain.InvoiceLine getReferenceById(UUID uuid) { return map.get(uuid); }
+    @Override public void deleteAllByIdInBatch(Iterable<UUID> uuids) { uuids.forEach(map::remove); }
+    
+    // QueryByExampleExecutor methods
+    @Override public <S extends com.efaturaai.core.domain.InvoiceLine> Optional<S> findOne(Example<S> example) { return Optional.empty(); }
+    @Override public <S extends com.efaturaai.core.domain.InvoiceLine> List<S> findAll(Example<S> example) { return List.of(); }
+    @Override public <S extends com.efaturaai.core.domain.InvoiceLine> List<S> findAll(Example<S> example, Sort sort) { return List.of(); }
+    @Override public <S extends com.efaturaai.core.domain.InvoiceLine> Page<S> findAll(Example<S> example, Pageable pageable) { return Page.empty(); }
+    @Override public <S extends com.efaturaai.core.domain.InvoiceLine> long count(Example<S> example) { return 0; }
+    @Override public <S extends com.efaturaai.core.domain.InvoiceLine> boolean exists(Example<S> example) { return false; }
+    @Override public <S extends com.efaturaai.core.domain.InvoiceLine, R> R findBy(Example<S> example, java.util.function.Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction) { return null; }
+    
+    // PagingAndSortingRepository methods
+    @Override public List<com.efaturaai.core.domain.InvoiceLine> findAll(Sort sort) { return findAll(); }
+    @Override public Page<com.efaturaai.core.domain.InvoiceLine> findAll(Pageable pageable) { return Page.empty(); }
+    
+    // InvoiceLineRepository specific method
+    @Override public List<com.efaturaai.core.domain.InvoiceLine> findByInvoiceId(UUID invoiceId) { return map.values().stream().filter(l -> l.getInvoiceId().equals(invoiceId)).collect(Collectors.toList()); }
+  }
+
 
   // Minimal in-memory fakes
   static class InMemoryInvoiceRepo implements InvoiceRepository {
@@ -268,57 +317,6 @@ public class InvoiceServiceTest {
     // PagingAndSortingRepository methods
     @Override public List<Customer> findAll(Sort sort) { return findAll(); }
     @Override public Page<Customer> findAll(Pageable pageable) { return Page.empty(); }
-  }
-
-  static class InMemoryInvoiceLineRepo implements InvoiceLineRepository {
-    private Map<UUID, InvoiceLine> map = new HashMap<>();
-    
-    @Override public <S extends InvoiceLine> S save(S entity) { map.put(entity.getId(), entity); return entity; }
-    @Override public Optional<InvoiceLine> findById(UUID uuid) { return Optional.ofNullable(map.get(uuid)); }
-    @Override public List<InvoiceLine> findAll() { return new ArrayList<>(map.values()); }
-    @Override public void deleteById(UUID uuid) { map.remove(uuid); }
-    @Override public boolean existsById(UUID uuid) { return map.containsKey(uuid); }
-    @Override public long count() { return map.size(); }
-    @Override public void delete(InvoiceLine entity) { map.remove(entity.getId()); }
-    @Override public void deleteAllById(Iterable<? extends UUID> uuids) { uuids.forEach(map::remove); }
-    @Override public void deleteAll(Iterable<? extends InvoiceLine> entities) { entities.forEach(e -> map.remove(e.getId())); }
-    @Override public void deleteAll() { map.clear(); }
-    @Override public <S extends InvoiceLine> List<S> saveAll(Iterable<S> entities) { 
-      List<S> result = new ArrayList<>();
-      entities.forEach(e -> result.add(save(e)));
-      return result;
-    }
-    @Override public List<InvoiceLine> findAllById(Iterable<UUID> uuids) { 
-      return StreamSupport.stream(uuids.spliterator(), false)
-          .map(map::get)
-          .filter(java.util.Objects::nonNull)
-          .collect(Collectors.toList());
-    }
-    @Override public void flush() {}
-    @Override public <S extends InvoiceLine> S saveAndFlush(S entity) { return save(entity); }
-    @Override public void deleteAllInBatch(Iterable<InvoiceLine> entities) { entities.forEach(e -> map.remove(e.getId())); }
-    @Override public void deleteAllInBatch() { map.clear(); }
-    @Override public InvoiceLine getOne(UUID uuid) { return map.get(uuid); }
-    @Override public InvoiceLine getById(UUID uuid) { return map.get(uuid); }
-    @Override public <S extends InvoiceLine> List<S> saveAllAndFlush(Iterable<S> entities) { return saveAll(entities); }
-    @Override public InvoiceLine getReferenceById(UUID uuid) { return map.get(uuid); }
-    @Override public void deleteAllByIdInBatch(Iterable<UUID> uuids) { uuids.forEach(map::remove); }
-    
-    // QueryByExampleExecutor methods
-    @Override public <S extends InvoiceLine> Optional<S> findOne(Example<S> example) { return Optional.empty(); }
-    @Override public <S extends InvoiceLine> List<S> findAll(Example<S> example) { return List.of(); }
-    @Override public <S extends InvoiceLine> List<S> findAll(Example<S> example, Sort sort) { return List.of(); }
-    @Override public <S extends InvoiceLine> Page<S> findAll(Example<S> example, Pageable pageable) { return Page.empty(); }
-    @Override public <S extends InvoiceLine> long count(Example<S> example) { return 0; }
-    @Override public <S extends InvoiceLine> boolean exists(Example<S> example) { return false; }
-    @Override public <S extends InvoiceLine, R> R findBy(Example<S> example, java.util.function.Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction) { return null; }
-    
-    // PagingAndSortingRepository methods
-    @Override public List<InvoiceLine> findAll(Sort sort) { return findAll(); }
-    @Override public Page<InvoiceLine> findAll(Pageable pageable) { return Page.empty(); }
-    
-    // InvoiceLineRepository specific method
-    @Override public List<InvoiceLine> findByInvoiceId(UUID invoiceId) { return map.values().stream().filter(l -> l.getInvoiceId().equals(invoiceId)).collect(Collectors.toList()); }
   }
 
   static class NoopOutboxRepo implements OutboxRepository {
