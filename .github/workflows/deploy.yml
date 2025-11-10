@@ -56,10 +56,10 @@ jobs:
       - name: Debug: Check AI module files
         run: |
           echo "=== AI Module Files Check ==="
-          ls -la backend/ai-core/build.gradle.kts 2>&1 || echo "❌ ai-core/build.gradle.kts NOT FOUND"
-          ls -la backend/ai-ops/build.gradle.kts 2>&1 || echo "❌ ai-ops/build.gradle.kts NOT FOUND"
-          ls -la backend/ai-insights/build.gradle.kts 2>&1 || echo "❌ ai-insights/build.gradle.kts NOT FOUND"
-          ls -la backend/ai-gateway/build.gradle.kts 2>&1 || echo "❌ ai-gateway/build.gradle.kts NOT FOUND"
+          ls -la backend/ai-core/build.gradle.kts 2>&1 || echo "ai-core/build.gradle.kts NOT FOUND"
+          ls -la backend/ai-ops/build.gradle.kts 2>&1 || echo "ai-ops/build.gradle.kts NOT FOUND"
+          ls -la backend/ai-insights/build.gradle.kts 2>&1 || echo "ai-insights/build.gradle.kts NOT FOUND"
+          ls -la backend/ai-gateway/build.gradle.kts 2>&1 || echo "ai-gateway/build.gradle.kts NOT FOUND"
           echo ""
           echo "=== Git Status ==="
           git log --oneline -5
