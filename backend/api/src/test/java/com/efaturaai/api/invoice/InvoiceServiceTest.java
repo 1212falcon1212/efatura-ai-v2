@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.efaturaai.core.domain.Customer;
 import com.efaturaai.core.domain.Invoice;
+import com.efaturaai.core.domain.InvoiceDocumentType;
 import com.efaturaai.core.domain.InvoiceLine;
 import com.efaturaai.core.domain.InvoiceStatus;
 import com.efaturaai.core.domain.OutboxMessage;
@@ -96,6 +97,7 @@ public class InvoiceServiceTest {
     inv.setTotalNet(new BigDecimal("100"));
     inv.setTotalVat(new BigDecimal("18"));
     inv.setStatus(InvoiceStatus.DRAFT);
+    inv.setType(InvoiceDocumentType.INVOICE);
     inv.setCreatedAt(OffsetDateTime.now());
     invoiceRepo.save(inv);
 
