@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: efatura-backend
+  namespace: efatura
+  labels:
+    app: efatura-backend
+spec:
+  type: ClusterIP
+  selector:
+    app: efatura-backend
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+      protocol: TCP
+  sessionAffinity: ClientIP
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: 10800
