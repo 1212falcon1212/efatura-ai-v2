@@ -53,7 +53,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: Debug: Check AI module files
+      - name: Debug Check AI module files
         run: |
           echo "=== AI Module Files Check ==="
           ls -la backend/ai-core/build.gradle.kts 2>&1 || echo "ai-core/build.gradle.kts NOT FOUND"

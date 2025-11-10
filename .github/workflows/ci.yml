@@ -25,7 +25,7 @@ jobs:
         run: |
           cd backend
           ./gradlew spotlessApply --no-daemon || echo "Spotless skipped"
-      - name: Debug: List AI module files
+      - name: Debug List AI module files
         run: |
           echo "=== AI Module Files Check ==="
           ls -la backend/ai-core/build.gradle.kts 2>&1 || echo "ai-core/build.gradle.kts NOT FOUND"
