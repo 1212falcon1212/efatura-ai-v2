@@ -27,4 +27,12 @@ public interface OutboxRepository extends JpaRepository<OutboxMessage, UUID> {
   @Modifying
   @Query("update OutboxMessage o set o.processed = true where o.id = :id")
   int markProcessed(@Param("id") UUID id);
+
+  @Modifying
+  @Query("update OutboxMessage o set o.status = :status, o.retryCount = :retry, o.nextRetryAt = :next where o.id = :id")
+  int updateFailure(
+      @Param("id") UUID id,
+      @Param("status") OutboxStatus status,
+      @Param("retry") int retry,
+      @Param("next") java.time.OffsetDateTime next);
 }

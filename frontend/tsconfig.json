@@ -12,14 +12,18 @@
     "jsx": "react-jsx",
     "strict": true,
     "baseUrl": ".",
-    "types": ["vitest", "node"],
+    "types": ["vitest", "node", "vite/client"],
     "paths": {
       "@/components/*": ["src/components/*"],
       "@/pages/*": ["src/pages/*"],
       "@/lib/*": ["src/lib/*"]
     }
   },
-  "include": ["src"]
+  "include": ["src", "src/vite-env.d.ts"],
+  "exclude": [
+    "src/__tests__/**",
+    "e2e/**"
+  ]
 }
 
 

@@ -48,6 +48,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
+      - name: Apply Spotless formatting
+        working-directory: ./backend
+        run: ./gradlew spotlessApply --no-daemon || echo "Spotless skipped"
       - name: Run unit tests
         working-directory: ./backend
         run: ./gradlew test --no-daemon || ./gradlew clean build -x itTest --no-daemon

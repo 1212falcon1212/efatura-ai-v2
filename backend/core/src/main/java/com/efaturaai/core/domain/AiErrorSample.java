@@ -8,8 +8,8 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 @Entity
-@Table(name = "api_keys")
-public class ApiKey implements TenantAware {
+@Table(name = "ai_error_samples")
+public class AiErrorSample implements TenantAware {
   @Id
   @Column(name = "id", nullable = false)
   private UUID id;
@@ -17,18 +17,18 @@ public class ApiKey implements TenantAware {
   @Column(name = "tenant_id", nullable = false)
   private UUID tenantId;
 
-  @Column(name = "name", nullable = false, length = 120)
-  private String name;
+  @Column(name = "source", nullable = false, length = 100)
+  private String source;
 
-  @Column(name = "api_key", nullable = false, length = 128, unique = true)
-  private String apiKey;
+  @Column(name = "code", length = 50)
+  private String code;
+
+  @Column(name = "message", nullable = false, columnDefinition = "TEXT")
+  private String message;
 
   @JdbcTypeCode(SqlTypes.JSON)
-  @Column(name = "scopes", columnDefinition = "JSONB")
-  private String scopes;
-
-  @Column(name = "active", nullable = false)
-  private boolean active = true;
+  @Column(name = "context_json", columnDefinition = "JSONB")
+  private String contextJson;
 
   @Column(name = "created_at", nullable = false)
   private OffsetDateTime createdAt;
@@ -51,36 +51,36 @@ public class ApiKey implements TenantAware {
     this.tenantId = tenantId;
   }
 
-  public String getName() {
-    return name;
+  public String getSource() {
+    return source;
   }
 
-  public void setName(String name) {
-    this.name = name;
+  public void setSource(String source) {
+    this.source = source;
   }
 
-  public String getApiKey() {
-    return apiKey;
+  public String getCode() {
+    return code;
   }
 
-  public void setApiKey(String apiKey) {
-    this.apiKey = apiKey;
+  public void setCode(String code) {
+    this.code = code;
   }
 
-  public String getScopes() {
-    return scopes;
+  public String getMessage() {
+    return message;
   }
 
-  public void setScopes(String scopes) {
-    this.scopes = scopes;
+  public void setMessage(String message) {
+    this.message = message;
   }
 
-  public boolean isActive() {
-    return active;
+  public String getContextJson() {
+    return contextJson;
   }
 
-  public void setActive(boolean active) {
-    this.active = active;
+  public void setContextJson(String contextJson) {
+    this.contextJson = contextJson;
   }
 
   public OffsetDateTime getCreatedAt() {
