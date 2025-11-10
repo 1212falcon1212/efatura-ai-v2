@@ -21,6 +21,9 @@ on:
 
 env:
   REGISTRY: ghcr.io
+  # Use repository owner (user or org) for package names
+  # For user accounts, this works directly
+  # For org accounts, ensure the workflow has write permissions
   BACKEND_IMAGE: ${{ github.repository_owner }}/efatura-backend
   FRONTEND_IMAGE: ${{ github.repository_owner }}/efatura-frontend
 
@@ -28,6 +31,8 @@ jobs:
   build-backend:
     name: Build Backend
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -100,6 +105,9 @@ jobs:
   build-frontend:
     name: Build Frontend
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -156,6 +164,9 @@ jobs:
           labels: ${{ steps.meta-frontend.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          # Use user-scoped package name instead of organization-scoped
+          # Format: ghcr.io/USERNAME/image-name instead of ghcr.io/ORG/image-name
+          # This avoids "installation not allowed to Create organization package" error
 
   deploy-staging:
     name: Deploy to Staging
