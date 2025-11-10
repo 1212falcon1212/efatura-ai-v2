@@ -226,7 +226,8 @@ jobs:
     name: Deploy to Production
     needs: [build-backend, build-frontend]
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    # Only run if KUBECONFIG_PRODUCTION secret is configured
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && secrets.KUBECONFIG_PRODUCTION != ''
     environment:
       name: production
       url: https://efatura.ai
